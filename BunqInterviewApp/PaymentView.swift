@@ -12,12 +12,11 @@ struct PaymentView: View {
     @State var value: Double = 0
     @State var recipient: String = ""
     @FocusState var showKeyboard: Bool
-    @State var outcome: Bool = true
+    @State var outcome: Bool = false
     @State private var showingPopover = false
     
     var body: some View {
         VStack {
-            
             
             Text("Payment")
                 .font(.largeTitle)
@@ -29,17 +28,17 @@ struct PaymentView: View {
 //                .keyboardType(.numberPad)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .font(.largeTitle)
-                .padding(.init(top: 0, leading: 15, bottom: 0, trailing: 15))
+                .padding(.init(top: 0, leading: 15, bottom: 5, trailing: 15))
             
             TextField("Recipient", text: $recipient)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .focused($showKeyboard)
-                .padding(.init(top: 0, leading: 15, bottom: 10, trailing: 15))
-            
+                .padding(.init(top: 0, leading: 15, bottom: 5, trailing: 15))
             
             Button(action: {
                 showingPopover = true
                 outcome = Payment.add(value: value, recipient: recipient)
+                print(outcome)
                 value = 0
                 recipient = ""
                 showKeyboard = false
@@ -49,10 +48,12 @@ struct PaymentView: View {
                     .fontWeight(.bold)
                     .foregroundColor(Color.white)
             })
+            
             .padding(10)
-            .frame(width: 100, height: 40)
+            .frame(maxWidth: .infinity)
             .background(Color.black)
-            .cornerRadius(10)
+            .cornerRadius(8)
+            .padding(.init(top: 0, leading: 15, bottom: 0, trailing: 15))
             
             Spacer()
         }
@@ -76,6 +77,7 @@ struct PaymentView: View {
                             .font(.headline)
                             .padding()
                         Text("please try again")
+                            .foregroundColor(Color.white)
                     }
                 }
             }

@@ -12,15 +12,15 @@ struct PaymentHistoryView: View {
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Payment.timestamp, ascending: false)],
-        animation: .default)
-    private var payments: FetchedResults<Payment>
+        animation: .default
+    ) private var payments: FetchedResults<Payment>
 
     var body: some View {
         NavigationView {
             List {
                 ForEach(payments) { payment in
                     NavigationLink {
-                        Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
+                        Text("You sent \(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
                         
                         Text(payment.timestamp!, formatter: Payment.dateFormatter)
                             .font(.footnote)

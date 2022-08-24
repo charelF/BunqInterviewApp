@@ -54,8 +54,6 @@ extension Payment {
             do {
                 try viewContext.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
@@ -63,8 +61,6 @@ extension Payment {
         } else {
             return false
         }
-        
-        
     }
 }
 
@@ -78,33 +74,6 @@ extension Payment {
         let payments: [Payment] = [payment]
         return payments
     }()
-    
-//    static func getPreviewPayments(vc: NSManagedObjectContext) -> [Payment] {
-//        let payment = Payment(context: vc)
-//        payment.recipient = "TEST"
-//        payment.value = 99.99
-//        payment.timestamp = Date()
-//        let payments: [Payment] = [payment]
-//        return payments
-//
-//    }
 }
-
-//class Payment {
-//
-//    // We consider a very simple payment class only
-//    // which represents a payment by its recipient and the value
-//
-//    let value: Double
-//    let recipient: String
-//    let timestamp: Date
-//
-//    init(value: Double, recipient: String) {
-//        self.value = value
-//        self.recipient = recipient
-//        self.timestamp = Date.now
-//
-//    }
-//}
 
 
