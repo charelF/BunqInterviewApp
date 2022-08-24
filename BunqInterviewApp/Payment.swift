@@ -26,40 +26,23 @@ extension Payment {
 
 extension Payment {
     
-    static func spottyConnection() -> Bool {
-        sleep(1)
-        let randomInt = Int.random(in: 0...10)
-        if randomInt < 6 {
-            return false
-        } else {
-            return true
-        }
-    }
-    
-    
-    static func add(value: Double, recipient: String) -> Bool {
+    static func add(value: Double, recipient: String) {
+        print(value, recipient)
         if recipient.isEmpty {
-            return false
+            return
         }
         
-        let willSucceed = spottyConnection()
-        
-        if willSucceed {
-            let viewContext = PersistenceController.shared.container.viewContext
-            let payment = Payment(context: viewContext)
-            payment.recipient = recipient
-            payment.value = value
-            payment.timestamp = Date()
+        let viewContext = PersistenceController.shared.container.viewContext
+        let payment = Payment(context: viewContext)
+        payment.recipient = recipient
+        payment.value = value
+        payment.timestamp = Date()
             
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-            return true
-        } else {
-            return false
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
 }
@@ -74,6 +57,12 @@ extension Payment {
         let payments: [Payment] = [payment]
         return payments
     }()
+}
+
+enum PaymentState {
+    case loading
+    case success
+    case fail
 }
 
 

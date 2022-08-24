@@ -14,8 +14,19 @@ struct PaymentView: View {
     @FocusState var showKeyboard: Bool
     @State var outcome: Bool = false
     @State private var showingPopover = false
+    @State var paymentState: PaymentState = .loading
     
+    @Environment(\.colorScheme) var colorScheme
     
+    private func sendPayment() async {
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        let randomInt = Int.random(in: 0...10)
+        if randomInt != 0 {
+            paymentState = .success
+        } else {
+            paymentState = .fail
+        }
+    }
     
     var body: some View {
         VStack {
@@ -26,10 +37,11 @@ struct PaymentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.init(top: 50, leading: 15, bottom: 10, trailing: 15))
             
-            TextField("0.00", value: $value, formatter: Payment.numberFormatter)
+            TextField("", value: $value, formatter: Payment.numberFormatter)
 //                .keyboardType(.numberPad)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .font(.largeTitle)
+                .focused($showKeyboard)
                 .padding(.init(top: 0, leading: 15, bottom: 5, trailing: 15))
             
             TextField("Recipient", text: $recipient)
@@ -38,22 +50,27 @@ struct PaymentView: View {
                 .padding(.init(top: 0, leading: 15, bottom: 5, trailing: 15))
             
             Button(action: {
+                paymentState = .loading
+                Task {
+                    await sendPayment()
+                    if paymentState == .success {
+                        Payment.add(value: value, recipient: recipient)
+                    }
+                    value = 0
+                    recipient = ""
+                }
                 showingPopover = true
-                outcome = Payment.add(value: value, recipient: recipient)
-                print(outcome)
-                value = 0
-                recipient = ""
                 showKeyboard = false
                 
             }, label: {
                 Text("Send")
                     .fontWeight(.bold)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
             })
             
             .padding(10)
             .frame(maxWidth: .infinity)
-            .background(Color.black)
+            .background(colorScheme == .dark ? Color.white : Color.black)
             .cornerRadius(8)
             .padding(.init(top: 0, leading: 15, bottom: 0, trailing: 15))
             
@@ -61,7 +78,10 @@ struct PaymentView: View {
         }
         .popover(isPresented: $showingPopover) {
             ZStack {
-                if outcome {
+                switch paymentState {
+                case .loading:
+                    ProgressView()
+                case .success:
                     Color.green
                     Text("Success!")
                         .font(.largeTitle)
@@ -69,7 +89,7 @@ struct PaymentView: View {
                         .foregroundColor(Color.white)
                         .font(.headline)
                         .padding()
-                } else {
+                case .fail:
                     Color.red
                     VStack {
                         Text("Payment failed")
