@@ -7,15 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A21726A128B6058500427FB7 /* PaymentHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21726A028B6058500427FB7 /* PaymentHistoryView.swift */; };
 		A2B5963928B50F0E005D1982 /* BunqInterviewAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B5963828B50F0E005D1982 /* BunqInterviewAppApp.swift */; };
 		A2B5963B28B50F0E005D1982 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B5963A28B50F0E005D1982 /* ContentView.swift */; };
 		A2B5963D28B50F11005D1982 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2B5963C28B50F11005D1982 /* Assets.xcassets */; };
 		A2B5964028B50F11005D1982 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2B5963F28B50F11005D1982 /* Preview Assets.xcassets */; };
 		A2B5964228B50F11005D1982 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B5964128B50F11005D1982 /* Persistence.swift */; };
 		A2B5964528B50F11005D1982 /* BunqInterviewApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2B5964328B50F11005D1982 /* BunqInterviewApp.xcdatamodeld */; };
+		A2B5964C28B510F5005D1982 /* PaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B5964B28B510F5005D1982 /* PaymentView.swift */; };
+		A2B5964E28B56545005D1982 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B5964D28B56545005D1982 /* Payment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A21726A028B6058500427FB7 /* PaymentHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentHistoryView.swift; sourceTree = "<group>"; };
 		A2B5963528B50F0E005D1982 /* BunqInterviewApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BunqInterviewApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2B5963828B50F0E005D1982 /* BunqInterviewAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BunqInterviewAppApp.swift; sourceTree = "<group>"; };
 		A2B5963A28B50F0E005D1982 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -23,6 +27,8 @@
 		A2B5963F28B50F11005D1982 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A2B5964128B50F11005D1982 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		A2B5964428B50F11005D1982 /* BunqInterviewApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BunqInterviewApp.xcdatamodel; sourceTree = "<group>"; };
+		A2B5964B28B510F5005D1982 /* PaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentView.swift; sourceTree = "<group>"; };
+		A2B5964D28B56545005D1982 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,10 +63,13 @@
 			children = (
 				A2B5963828B50F0E005D1982 /* BunqInterviewAppApp.swift */,
 				A2B5963A28B50F0E005D1982 /* ContentView.swift */,
+				A21726A028B6058500427FB7 /* PaymentHistoryView.swift */,
+				A2B5964B28B510F5005D1982 /* PaymentView.swift */,
 				A2B5963C28B50F11005D1982 /* Assets.xcassets */,
 				A2B5964128B50F11005D1982 /* Persistence.swift */,
 				A2B5964328B50F11005D1982 /* BunqInterviewApp.xcdatamodeld */,
 				A2B5963E28B50F11005D1982 /* Preview Content */,
+				A2B5964D28B56545005D1982 /* Payment.swift */,
 			);
 			path = BunqInterviewApp;
 			sourceTree = "<group>";
@@ -143,9 +152,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A21726A128B6058500427FB7 /* PaymentHistoryView.swift in Sources */,
 				A2B5964228B50F11005D1982 /* Persistence.swift in Sources */,
 				A2B5964528B50F11005D1982 /* BunqInterviewApp.xcdatamodeld in Sources */,
 				A2B5963B28B50F0E005D1982 /* ContentView.swift in Sources */,
+				A2B5964C28B510F5005D1982 /* PaymentView.swift in Sources */,
+				A2B5964E28B56545005D1982 /* Payment.swift in Sources */,
 				A2B5963928B50F0E005D1982 /* BunqInterviewAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
