@@ -15,6 +15,8 @@ struct PaymentView: View {
     @State var outcome: Bool = false
     @State private var showingPopover = false
     
+    
+    
     var body: some View {
         VStack {
             
