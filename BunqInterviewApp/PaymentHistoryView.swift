@@ -15,38 +15,57 @@ struct PaymentHistoryView: View {
         animation: .default
     ) private var payments: FetchedResults<Payment>
     
-    @State var fetched: Bool = false
+    @State var paymentState: PaymentState = .loading
     
-    private func awaitPayments() async {
+    private func loadPayments() async {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        
-        // 1 in 10 chance that the payment request did not work, then we dont show the user an error but instead silently retry
-        let randomInt = Int.random(in: 0...10)
-        if randomInt == 0 {
-            fetched = false
+        let randomInt = Int.random(in: 0...9)
+        if randomInt != 0 {
+            paymentState = .success
         } else {
-            fetched = true
+            paymentState = .fail
         }
     }
 
     var body: some View {
         NavigationView {
-            if !fetched {
-                ProgressView()
-                    .task({
-                        while !fetched {
-                            await awaitPayments()
+            
+            switch paymentState {
+            case .loading:
+                ProgressView().task {
+                    await loadPayments()
+                }
+            case .fail:
+                ZStack {
+                    Color.red
+                    VStack {
+                        Text("Failed to load payments")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.white)
+                            .font(.headline)
+                            .padding()
+                        Text("Tap to reload")
+                            .foregroundColor(Color.white)
+                    }
+                    .onTapGesture {
+                        paymentState = .loading
+                        Task {
+                            await loadPayments()
                         }
                     }
-                    )
-            } else {
+                }
+            case .success:
                 List {
                     ForEach(payments) { payment in
                         NavigationLink {
                             Text("You sent \(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
+                                .font(.title)
+                                .padding(15)
                             
                             Text(payment.timestamp!, formatter: Payment.dateFormatter)
-                                .font(.footnote)
+                                .font(.body)
+                                .padding(15)
                             
                         } label: {
                             VStack {
@@ -57,7 +76,7 @@ struct PaymentHistoryView: View {
                 }
                 .navigationTitle("Payment History")
                 .refreshable {
-                    await awaitPayments()
+                    await loadPayments()
                 }
             }
         }

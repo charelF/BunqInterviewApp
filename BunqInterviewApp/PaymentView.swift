@@ -12,15 +12,13 @@ struct PaymentView: View {
     @State var value: Double = 0
     @State var recipient: String = ""
     @FocusState var showKeyboard: Bool
-    @State var outcome: Bool = false
     @State private var showingPopover = false
     @State var paymentState: PaymentState = .loading
-    
     @Environment(\.colorScheme) var colorScheme
     
     private func sendPayment() async {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        let randomInt = Int.random(in: 0...10)
+        let randomInt = Int.random(in: 0...9)
         if randomInt != 0 {
             paymentState = .success
         } else {
