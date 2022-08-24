@@ -18,31 +18,25 @@ struct PaymentHistoryView: View {
     var body: some View {
         NavigationView {
             List {
-                
-                Section(header: Text("New Payment")) {
-                    PaymentView()
-                }
-                
-                
-                
-                Section(header: Text("History")) {
-                
-                    ForEach(payments) { payment in
-                        NavigationLink {
+                ForEach(payments) { payment in
+                    NavigationLink {
+                        Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
+                        
+                        Text(payment.timestamp!, formatter: Payment.dateFormatter)
+                            .font(.footnote)
+                        
+                    } label: {
+                        VStack {
                             Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
-                            
-                            Text(payment.timestamp!, formatter: Payment.dateFormatter)
-                                .font(.footnote)
-                            
-                        } label: {
-                            VStack {
-                                Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
-                            }
                         }
                     }
                 }
             }
-            .navigationTitle("Bunq")
+            .navigationTitle("Payment History")
+            .refreshable {
+                print("Do your refresh work here")
+                sleep(1)
+            }
         }
     }
 }

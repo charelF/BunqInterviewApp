@@ -25,24 +25,46 @@ extension Payment {
 }
 
 extension Payment {
-    static func add(value: Double, recipient: String) {
+    
+    static func spottyConnection() -> Bool {
+        sleep(1)
+        let randomInt = Int.random(in: 0...10)
+        if randomInt < 6 {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    
+    static func add(value: Double, recipient: String) -> Bool {
         if recipient.isEmpty {
-            return
+            return false
         }
-        let viewContext = PersistenceController.shared.container.viewContext
-        let payment = Payment(context: viewContext)
-        payment.recipient = recipient
-        payment.value = value
-        payment.timestamp = Date()
         
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        let willSucceed = spottyConnection()
+        
+        if willSucceed {
+            let viewContext = PersistenceController.shared.container.viewContext
+            let payment = Payment(context: viewContext)
+            payment.recipient = recipient
+            payment.value = value
+            payment.timestamp = Date()
+            
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+            return true
+        } else {
+            return false
         }
+        
+        
     }
 }
 
