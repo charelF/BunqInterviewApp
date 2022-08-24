@@ -11,27 +11,38 @@ struct PaymentHistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Payment.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Payment.timestamp, ascending: false)],
         animation: .default)
     private var payments: FetchedResults<Payment>
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(payments) { payment in
-                    NavigationLink {
-                        Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
-                        
-                        Text(payment.timestamp!, formatter: Payment.dateFormatter)
-                            .font(.footnote)
-                        
-                    } label: {
-                        VStack {
+                
+                Section(header: Text("New Payment")) {
+                    PaymentView()
+                }
+                
+                
+                
+                Section(header: Text("History")) {
+                
+                    ForEach(payments) { payment in
+                        NavigationLink {
                             Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
+                            
+                            Text(payment.timestamp!, formatter: Payment.dateFormatter)
+                                .font(.footnote)
+                            
+                        } label: {
+                            VStack {
+                                Text("\(Payment.numberFormatter.string(from: NSNumber(value: payment.value))!) to \(payment.recipient!)")
+                            }
                         }
                     }
                 }
             }
+            .navigationTitle("Bunq")
         }
     }
 }
