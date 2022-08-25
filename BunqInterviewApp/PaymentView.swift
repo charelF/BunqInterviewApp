@@ -12,19 +12,8 @@ struct PaymentView: View {
     @State var value: Double = 0
     @State var recipient: String = ""
     @FocusState var showKeyboard: Bool
-    @State private var showingPopover = false
-    @State var paymentState: PaymentState = .loading
+    @State var paymentState: PaymentState = .idle
     @Environment(\.colorScheme) var colorScheme
-    
-    private func sendPayment() async {
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        let randomInt = Int.random(in: 0...9)
-        if randomInt != 0 {
-            paymentState = .success
-        } else {
-            paymentState = .fail
-        }
-    }
     
     var body: some View {
         VStack {
@@ -33,10 +22,11 @@ struct PaymentView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.init(top: 50, leading: 15, bottom: 10, trailing: 15))
+                .padding(.init(top: 48, leading: 15, bottom: 10, trailing: 15))
             
             TextField("", value: $value, formatter: Payment.numberFormatter)
-//                .keyboardType(.numberPad)
+                // wanted to use numberPad but then we cant make a comma or dot as decimal separator
+                //.keyboardType(.numberPad)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .font(.largeTitle)
                 .focused($showKeyboard)
@@ -48,59 +38,52 @@ struct PaymentView: View {
                 .padding(.init(top: 0, leading: 15, bottom: 5, trailing: 15))
             
             Button(action: {
+                // when clicking the button, the paymenState is set to .loading in the main thread.
+                // In an async thread, we do the actual request and update the paymenState, propagate the changes to the UI
+                // Finally after some waiting, we set the state again to .idle to display the proper button again.
                 paymentState = .loading
                 Task {
-                    await sendPayment()
-                    if paymentState == .success {
-                        Payment.add(value: value, recipient: recipient)
-                    }
+                    paymentState = await Payment.sendPayment(value: value, recipient: recipient)
                     value = 0
                     recipient = ""
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    paymentState = .idle
                 }
-                showingPopover = true
                 showKeyboard = false
                 
             }, label: {
-                Text("Send")
-                    .fontWeight(.bold)
-                    .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
+                switch paymentState {
+                case .loading:
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                case .success:
+                    Text("Success")
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.white)
+                case .fail:
+                    Text("Fail")
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.white)
+                case .idle:
+                    Text("Send")
+                        .fontWeight(.bold)
+                        .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
+                }
             })
-            
             .padding(10)
             .frame(maxWidth: .infinity)
-            .background(colorScheme == .dark ? Color.white : Color.black)
+            .background(
+                // very ugly but could not make a switch statement work for some reason
+                paymentState == .idle ? (colorScheme == .dark ? Color.white : Color.black) :
+                    (paymentState == .loading ? Color.blue :
+                        (paymentState == .success ? Color.green : Color.red
+                        )
+                    )
+                )
             .cornerRadius(8)
             .padding(.init(top: 0, leading: 15, bottom: 0, trailing: 15))
             
             Spacer()
-        }
-        .popover(isPresented: $showingPopover) {
-            ZStack {
-                switch paymentState {
-                case .loading:
-                    ProgressView()
-                case .success:
-                    Color.green
-                    Text("Success!")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(Color.white)
-                        .font(.headline)
-                        .padding()
-                case .fail:
-                    Color.red
-                    VStack {
-                        Text("Payment failed")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(Color.white)
-                            .font(.headline)
-                            .padding()
-                        Text("please try again")
-                            .foregroundColor(Color.white)
-                    }
-                }
-            }
         }
     }
 }

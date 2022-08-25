@@ -8,6 +8,8 @@
 import Foundation
 
 extension Payment {
+    // We are working with extensions to the Payment class since the original class is defined
+    // by Core Data and thus not easily accessible
     static let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale.current
@@ -25,44 +27,54 @@ extension Payment {
 }
 
 extension Payment {
+    static func sendPayment(value: Double, recipient: String) async -> PaymentState {
+        // Sends a Payment. This function is async such that the main UI of the app stays responsive.
+        
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
     
-    static func add(value: Double, recipient: String) {
-        print(value, recipient)
         if recipient.isEmpty {
-            return
+            return .fail
         }
         
-        let viewContext = PersistenceController.shared.container.viewContext
-        let payment = Payment(context: viewContext)
-        payment.recipient = recipient
-        payment.value = value
-        payment.timestamp = Date()
-            
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        let randomInt = Int.random(in: 0...9)
+        if randomInt == 0 {
+            // 10% chance of failed network request
+            return .fail
+        } else {
+            let viewContext = PersistenceController.shared.container.viewContext
+            let payment = Payment(context: viewContext)
+            payment.recipient = recipient
+            payment.value = value
+            payment.timestamp = Date()
+            do {
+                try viewContext.save()
+            } catch {
+                return .fail
+            }
+        }
+        return .success
+    }
+    
+    static func loadPayments() async -> PaymentState {
+        // not a very nice function, as it changes the paymentState irrespective of whether the payments went through or not
+        // instead doing the fetch request here in this function would be nicer
+        // however that is not trivial to do, and I had trouble implementing it in SwiftUI as the
+        // @FetchRequest decorator is the preferred way
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        let randomInt = Int.random(in: 0...9)
+        if randomInt != 0 {
+            return .success
+        } else {
+            return .fail
         }
     }
-}
-
-extension Payment {
-    static let previewPayments: [Payment] = {
-        let viewContext = PersistenceController.preview.container.viewContext
-        let payment = Payment(context: viewContext)
-        payment.recipient = "TEST"
-        payment.value = 99.99
-        payment.timestamp = Date()
-        let payments: [Payment] = [payment]
-        return payments
-    }()
 }
 
 enum PaymentState {
     case loading
     case success
     case fail
+    case idle
 }
 
 
