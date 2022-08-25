@@ -2,6 +2,22 @@
 
 Simple Payments App I developed for the Bunq iOS developer interview take-home assignment. The App is developed in SwiftUI, using XCode 13.4.1 and targets iOS 15.5.
 
+## Features :
+
+> - Do a payment
+> - See a payment overview
+> - See details for a payment
+
+The app supports all of these features
+
+> Do this while storing the payments in a local database. Although
+make sure that this behaves more like a network call. Where reading
+and writing to the database will both be delayed by a second and
+any call can fail 1 in 10 times where it will throw an exception after
+the delay.
+
+I used Core Data for the database. I used `async` and added delays such that the UI is responsive at all times, even though the request may fail or not and takes always 1 second to load.
+
 ## Gif
 
 | All features |
